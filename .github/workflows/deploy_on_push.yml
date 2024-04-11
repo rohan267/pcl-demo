@@ -11,12 +11,10 @@ jobs:
 
     env:
       # non-standard Payara Cloud Endpoint, not really thing to document at this point
-      PCL_ENDPOINT: https://manage.dev02-head.payara.cloud
-      PCL_CLIENT_ID: "OPWL6h4SUxPHa1rMZ9flPStKkxnMQj8H"
       # token obtained from `pcl login --print-token`
       PCL_AUTH_TOKEN: ${{ secrets.PCL_AUTH_TOKEN }}
-      PCL_VERSION: 1.0.1
-      PCL: pcl-1.0.1/bin/pcl
+      PCL_VERSION: 1.1.0
+      PCL: pcl-1.1.0/bin/pcl
 
     steps:
       - uses: actions/checkout@v2
@@ -40,11 +38,11 @@ jobs:
         # This should download PCL from official download location rather than our internal Maven repo
         # unzip cannot do pipes. jar can, but it ignores file permissions
         run: |
-          curl https://nexus.payara.fish/repository/payara-artifacts/fish/payara/cloud/pcl/$PCL_VERSION/pcl-$PCL_VERSION.zip -o pcl.zip
+          curl https://nexus.dev.payara.fish/repository/payara-artifacts/fish/payara/cloud/pcl/$PCL_VERSION/pcl-$PCL_VERSION.zip -o pcl.zip
           unzip pcl.zip
           rm pcl.zip
 
       - name: Deploy application
         run: |
-          $PCL upload -n start-dev target/ci-demo.war --deploy
+          $PCL upload -n cli-demo target/ci-demo.war --deploy
 
