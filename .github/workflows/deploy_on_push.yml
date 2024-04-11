@@ -38,7 +38,7 @@ jobs:
         # This should download PCL from official download location rather than our internal Maven repo
         # unzip cannot do pipes. jar can, but it ignores file permissions
         run: |
-          curl https://nexus.dev.payara.fish/repository/payara-artifacts/fish/payara/cloud/pcl/$PCL_VERSION/pcl-$PCL_VERSION.zip -o pcl.zip
+          curl https://nexus.payara.fish/repository/payara-artifacts/fish/payara/cloud/pcl/$PCL_VERSION/pcl-$PCL_VERSION.zip -o pcl.zip
           unzip pcl.zip
           rm pcl.zip
 
