@@ -1,0 +1,5 @@
+fish\payara\cloud\ci\demo\HelloController.class
+fish\payara\cloud\ci\demo\CidemoRestApplication.class
+fish\payara\cloud\ci\demo\health\ServiceLiveHealthCheck.class
+fish\payara\cloud\ci\demo\health\ServiceReadyHealthCheck.class
+fish\payara\cloud\ci\demo\config\ConfigTestController.class
