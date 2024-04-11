@@ -44,5 +44,5 @@ jobs:
 
       - name: Deploy application
         run: |
-          $PCL upload -n cli-demo target/ci-demo.war --deploy
+          $PCL upload -n cli-demo target/petclinic.war --deploy
 
