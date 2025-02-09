@@ -1,48 +1,32 @@
-name: Deploy to Payara Cloud
+name: 'Deploy to Payara Cloud'
 
 on:
   push:
     branches: [ main ]
 
 jobs:
-  build:
-
+  deploy:
     runs-on: ubuntu-latest
-
     env:
-      # non-standard Payara Cloud Endpoint, not really thing to document at this point
-      # token obtained from `pcl login --print-token`
-      PCL_AUTH_TOKEN: ${{ secrets.PCL_AUTH_TOKEN }}
-      PCL_VERSION: 1.1.0
-      PCL: pcl-1.1.0/bin/pcl
-
+      ACTIONS_STEP_DEBUG: true
+      PCL_ENDPOINT: ${{ secrets.PCL_ENDPOINT }}
+      PCL_CLIENT_ID: ${{ secrets.PCL_CLIENT_ID }}
     steps:
-      - uses: actions/checkout@v2
-      - name: Set up JDK 11
-        uses: actions/setup-java@v1
+      - name: Checkout code
+        uses: actions/checkout@v2
+      - name: Set up JDK
+        uses: actions/setup-java@v4
         with:
-          java-version: 11
-      - name: Cache repository
-        uses: actions/cache@v2
-        with:
-          path: |
-            ~/.m2/repository
-          # we only use direct match of pom.xml. So a version change will surely drop the cache
-          key: ${{ runner.os }}-maven-${{ hashFiles('pom.xml') }}
-
+          distribution: zulu
+          java-version: 17
       - name: Build with Maven
-        run: mvn -B verify
-
-      # upload-artifact / download-artifact actions can be used to sepearate these into separate jobs
-      - name: Download PCL
-        # This should download PCL from official download location rather than our internal Maven repo
-        # unzip cannot do pipes. jar can, but it ignores file permissions
-        run: |
-          curl https://nexus.payara.fish/repository/payara-artifacts/fish/payara/cloud/pcl/$PCL_VERSION/pcl-$PCL_VERSION.zip -o pcl.zip
-          unzip pcl.zip
-          rm pcl.zip
-
-      - name: Deploy application
-        run: |
-          $PCL upload -n cli-demo target/petclinic.war --deploy
-
+        run: mvn clean package
+      - name: Deploy to Payara Cloud
+        uses: payara/cloud-deploy@master
+        with:
+          token: ${{ secrets.PCL_AUTH_TOKEN }}
+          subscription_name: 'rohan 2025-01-30'
+          namespace: 'start-dev'
+          app_name: 'custom-app-name'
+          artifact_location: './target/petclinic.war'
+          deploy: true
